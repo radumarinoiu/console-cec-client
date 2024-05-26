@@ -29,8 +29,8 @@ DEVICE_ADDRESSES = {
 
 
 class CECCommands(Enum):
-    SWITCH_TO_SHIELD: ["tx 14:44:40"]
-    SWITCH_TO_GAME: ["tx 15:44:69:04", "tx 14:36"]
+    SWITCH_TO_SHIELD = ["14:44:40"]
+    SWITCH_TO_GAME = ["15:44:69:04", "14:36"]
 
 
 class CECClient:
@@ -91,6 +91,10 @@ class CECClient:
         print("transmit " + data)
         if not self.instance.lib.Transmit(cmd):
             raise RuntimeError("Failed sending message")
+
+    def ProcessCECCommands(self, data):
+        for command in data:
+            self.ProcessCommandTx(command)
 
     # scan the bus and display devices that were found
     def ProcessCommandScan(self):
