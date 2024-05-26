@@ -1,0 +1,3 @@
+[submodule "htpc_cec_client"]
+	path = htpc_cec_client
+	url = https://github.com/radumarinoiu/htpc-cec-client.git
