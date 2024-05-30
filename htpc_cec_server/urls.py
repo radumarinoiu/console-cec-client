@@ -22,5 +22,6 @@ from htpc_cec_server import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("on-client-message/", views.ClientMessageCallbackAPIView.as_view()),
+    path("on-log-emitted/", views.ClientMessageCallbackAPIView.as_view()),
     path("send-cec-message/", views.SendCECMessageAPIView.as_view()),
 ]

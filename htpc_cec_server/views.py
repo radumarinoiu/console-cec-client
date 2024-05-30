@@ -41,6 +41,17 @@ class ClientMessageCallbackAPIView(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
+class ClientLogEmitted(APIView):
+    def post(self, request, *args, **kwargs):
+        message = request.data.get("message")
+        if message is None:
+            return Response({"error": "No message received"}, status=status.HTTP_400_BAD_REQUEST)
+
+        print(f"[CLIENT LOG] {message}")
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
 class SendCECMessageAPIView(APIView):
     def post(self, request, *args, **kwargs):
         message = request.data.get("message")
