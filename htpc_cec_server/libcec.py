@@ -30,7 +30,7 @@ DEVICE_ADDRESSES = {
 
 class CECCommands(Enum):
     SWITCH_TO_SHIELD = ["14:44:40"]
-    SWITCH_TO_GAME = ["15:44:69:04", "14:36"]
+    SWITCH_TO_GAME = ["15:04", "15:44:69:04", "14:36", "10:04"]
 
 
 class CECClient:
