@@ -24,4 +24,5 @@ urlpatterns = [
     path("on-client-message/", views.ClientMessageCallbackAPIView.as_view()),
     path("on-log-emitted/", views.ClientLogEmitted.as_view()),
     path("send-cec-message/", views.SendCECMessageAPIView.as_view()),
+    path("get-console-state/", views.HomeAssistantGetStateAPIView.as_view())
 ]

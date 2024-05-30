@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from htpc_cec_client.constants import EventTypes, EventTargets, EVENT_TYPE_KEY, EVENT_TARGET_KEY, EVENT_VALUE_KEY
 from htpc_cec_server.libcec import CECClient, CECCommands
+from htpc_cec_server.utils import ConsoleManager
 
 
 class ClientMessageCallbackAPIView(APIView):
@@ -24,19 +25,18 @@ class ClientMessageCallbackAPIView(APIView):
                 message[key] = fields_dict[key](message[key])
             except KeyError:
                 return Response({"error": f"Field {key} in message is required"}, status=status.HTTP_400_BAD_REQUEST)
+            except ValueError:
+                pass
 
         print(f"[NEW MESSAGE] {message}")
-        if message[EVENT_TYPE_KEY] == EventTypes.POWER_OTHER_EVENT:
-            if message[EVENT_TARGET_KEY] == EventTargets.DISPLAY_STATE:
-                if message[EVENT_VALUE_KEY]:
-                    try:
-                        CECClient().ProcessCECCommands(CECCommands.SWITCH_TO_GAME.value)
-                    except Exception:
-                        print(traceback.format_exc())
-                        return Response(
-                            {"error": "Failed executing command for message"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                        )
+        try:
+            ConsoleManager().dispatch_event(message)
+        except Exception:
+            print(traceback.format_exc())
+            return Response(
+                {"error": "Failed executing command for message"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -64,3 +64,8 @@ class SendCECMessageAPIView(APIView):
             return Response({"error": str(ex)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         print(f"[SENT MESSAGE] {message}")
         return Response(status=status.HTTP_201_CREATED)
+
+
+class HomeAssistantGetStateAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response({"powered_on": ConsoleManager().powered_on}, status=status.HTTP_200_OK)
