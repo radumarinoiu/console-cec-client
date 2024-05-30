@@ -13,20 +13,24 @@ class ConsoleManager:
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
             cls.instance = super().__new__(cls, *args, **kwargs)
-            cls.instance._event_reactions = {
-                # Power on events
-                (EventTypes.POWER_OTHER_EVENT, EventTargets.DISPLAY_STATE, True): cls.instance.power_on,
-                (EventTypes.POWER_OTHER_EVENT, EventTargets.MONITOR_STATE, True): cls.instance.power_on,
-                (EventTypes.POWER_STATUS_CHANGE, EventTargets.POWER_STATE, True): cls.instance.power_on,
-                (EventTypes.POWER_RESUME_MANUALLY, "N/A", True): cls.instance.power_on,
-                (EventTypes.POWER_RESUME_AUTOMATIC, "N/A", True): cls.instance.power_on,
+            try:
+                cls.instance._event_reactions = {
+                    # Power on events
+                    (EventTypes.POWER_OTHER_EVENT, EventTargets.DISPLAY_STATE, True): cls.instance.power_on,
+                    (EventTypes.POWER_OTHER_EVENT, EventTargets.MONITOR_STATE, True): cls.instance.power_on,
+                    (EventTypes.POWER_STATUS_CHANGE, EventTargets.POWER_STATE, True): cls.instance.power_on,
+                    (EventTypes.POWER_RESUME_MANUALLY, "N/A", True): cls.instance.power_on,
+                    (EventTypes.POWER_RESUME_AUTOMATIC, "N/A", True): cls.instance.power_on,
 
-                # Power off events
-                (EventTypes.POWER_OTHER_EVENT, EventTargets.DISPLAY_STATE, False): cls.instance.power_off,
-                (EventTypes.POWER_OTHER_EVENT, EventTargets.MONITOR_STATE, False): cls.instance.power_off,
-                (EventTypes.POWER_STATUS_CHANGE, EventTargets.POWER_STATE, False): cls.instance.power_off,
-                (EventTypes.POWER_SUSPEND, "N/A", True): cls.instance.power_off,
-            }
+                    # Power off events
+                    (EventTypes.POWER_OTHER_EVENT, EventTargets.DISPLAY_STATE, False): cls.instance.power_off,
+                    (EventTypes.POWER_OTHER_EVENT, EventTargets.MONITOR_STATE, False): cls.instance.power_off,
+                    (EventTypes.POWER_STATUS_CHANGE, EventTargets.POWER_STATE, False): cls.instance.power_off,
+                    (EventTypes.POWER_SUSPEND, "N/A", True): cls.instance.power_off,
+                }
+            except Exception:
+                cls.instance = None
+                raise
         return cls.instance
 
     def dispatch_event(self, event):
